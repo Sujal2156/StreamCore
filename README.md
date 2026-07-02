@@ -1,118 +1,109 @@
 # StreamCore
 
-Backend API for StreamCore — a simple video streaming platform backend.
+StreamCore is a Node.js and Express backend for a video platform. It currently covers user auth, profile management, Cloudinary uploads, and watch history, with a structure that is easy to extend as the product grows.
+
+Built as a practical backend project with a focus on clean route protection, reusable middleware, and real-world file handling.
 
 ## Features
-- User authentication (JWT)
-- Video upload (Cloudinary)
-- Basic subscription and user management
-
-
-# StreamCore
-
-![status](https://img.shields.io/badge/status-in%20progress-yellow)
-
-Production-grade REST API backend for a video streaming platform, inspired by YouTube's architecture.
-
-## Features
-- User registration and login with avatar upload
-- Dual-token JWT authentication (Access + Refresh) with secure cookies and token rotation
-- Video and thumbnail upload via Multer + Cloudinary with file validation and cleanup on failed uploads
-- Subscription system, video like/dislike, comments, and playlist management
-- Watch history, subscriber counts and liked-videos powered by MongoDB aggregation pipelines
-- MVC architecture with separate controllers, routes, models, and middleware
-- Custom `ApiError` class, async wrapper utility, and centralized API response format
+- User registration and login
+- Avatar and cover image upload through Multer + Cloudinary
+- JWT-based authentication with protected routes
+- Refresh token flow with cookie-based session handling
+- Update account details, password, avatar, and cover image
+- Channel profile lookup with subscriber count and subscription status
+- Watch history populated through MongoDB aggregation
+- Clean MVC structure with controllers, routes, models, middlewares, and utils
 
 ## Tech Stack
 - Node.js
 - Express.js
 - MongoDB + Mongoose
 - JSON Web Tokens (JWT)
-- Cloudinary, Multer
+- Cloudinary
+- Multer
 
-## Folder Structure (standard MVC)
+## Folder Structure
 
 ```
 src/
-	controllers/
-	models/
-	routes/
-	middlewares/
-	db/
-	utils/
-	index.js
+  controllers/
+  db/
+  middlewares/
+  models/
+  routes/
+  utils/
+  app.js
+  index.js
 public/
-package.json
-README.md
 ```
 
-## Run locally
+## Run Locally
 
-1. Clone the repo:
+1. Clone the repository:
 
 ```bash
-git clone https://github.com/Sujal2156/StreamCore.git
-cd StreamCore
+git clone <your-repo-url>
+cd Backend
 ```
 
-2. Install dependencies and start:
+2. Install dependencies and start the server:
 
 ```bash
 npm install
 npm run start
-# or (if you add a dev script) `npm run dev`
 ```
 
-The default `start` script uses `nodemon` and loads environment variables via `dotenv`.
+The start script uses `nodemon` and loads environment variables from `.env`.
 
-## Environment variables (.env example)
+If you want a development workflow, you can add a `dev` script later without changing the app code.
 
-Create a `.env` file at the project root with these variables:
+## Environment Variables
+
+Create a `.env` file in the project root and add the values below:
 
 ```
 PORT=3000
-MONGO_URI=mongodb://<user>:<pass>@host:port/dbname
-JWT_ACCESS_EXPIRES=15m
-JWT_REFRESH_EXPIRES=7d
-JWT_SECRET=your_jwt_secret
-COOKIE_SECURE=true
+MONGODB_URI=mongodb://<user>:<pass>@host:port/dbname
+CORS_ORIGIN=http://localhost:3000
+ACCESS_TOKEN_SECRET=your_access_secret
+ACCESS_TOKEN_EXPIRY=15m
+REFRESH_TOKEN_SECRET=your_refresh_secret
+REFRESH_TOKEN_EXPIRY=7d
 CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
-MAX_UPLOAD_SIZE=50mb
 ```
 
-## API Endpoints (overview)
+## API Endpoints
 
-This is a high-level overview — see the route files under `src/routes` for details.
+Base path: `/api/v1/users`
 
-- Auth
-	- `POST /api/auth/register` — register user (avatar upload)
-	- `POST /api/auth/login` — login (returns access token + sets refresh cookie)
-	- `POST /api/auth/refresh` — rotate refresh token
-	- `POST /api/auth/logout` — clear refresh cookie
+- `POST /register` - register a new user with avatar and optional cover image
+- `POST /login` - login with email or username
+- `POST /logout` - log out the current user
+- `POST /refresh-token` - refresh the access token
+- `POST /change-password` - change password for the logged-in user
+- `GET /current-user` - fetch the current user profile
+- `PATCH /update-account` - update full name and email
+- `PATCH /avatar` - update avatar
+- `PATCH /cover-image` - update cover image
+- `GET /c/:username` - get channel profile details
+- `GET /history` - get watch history
 
-- Users
-	- `GET /api/users/:id` — get user profile
-	- `PUT /api/users/:id` — update profile (avatar upload)
+## Notes
 
-- Videos
-	- `POST /api/videos` — upload video + thumbnail
-	- `GET /api/videos/:id` — video details
-	- `GET /api/videos` — list / search videos
-	- `POST /api/videos/:id/like` — like/unlike
-	- `POST /api/videos/:id/comment` — add comment
-
-- Subscriptions & Playlists
-	- `POST /api/users/:id/subscribe` — subscribe/unsubscribe
-	- `POST /api/playlists` — create playlist
+- Protected routes use JWT verification from cookies or the `Authorization` header.
+- Uploads go to Cloudinary, and failed uploads are cleaned up through the utility layer.
+- The project is still in progress, so some platform features are not wired up yet.
+- The database name used in the code is `videotube`.
 
 ## Contributing
-Pull requests are welcome. Please open issues for discussion before large changes.
+
+Pull requests are welcome. If you plan to change a larger part of the backend, please open an issue first so the direction stays clear.
 
 ## Status
-In progress — deployment coming soon.
+In progress.
 
 ## License
 ISC
 
 ## Links
-- Repository: https://github.com/Sujal2156/StreamCore
+- Repository: your GitHub link here
